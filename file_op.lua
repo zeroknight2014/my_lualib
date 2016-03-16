@@ -45,9 +45,11 @@ function file_op.readfile_by_lines2(filepath)
   if rfile == nil then
   	return 1, nil;
   end
+  --content尾部不一定有换行符，记得加上一个，否则会漏掉最后一行
+  content = content.."\n";
   local text = "";
   for line in string.gmatch(content, '.-\n') do
-  	text = text..line.."\n";
+  	text = text..line;
   end
   return 0, text;
 end
