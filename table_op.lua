@@ -66,4 +66,31 @@ function table_op.get_table_value(table, m_key)
   return nil;
 end
 
+--将table数据转化为json格式
+function table_op.tableToJson(t)
+  local function transform(tmp)
+    local tb = {}
+    for k, v in pairs(tmp) do
+      local k_type = type(k)
+      local v_type = type(v)
+      local key = (k_type == "string" and '"' .. k .. '":') or (k_type == "number" and "")
+      local value = (v_type == "table" and transform(v))
+          or (v_type == "string" and '"' .. v .. '"')
+          or (v_type == "boolean" and tostring(v))
+          or (v_type == "number" and v)
+
+      tb[#tb + 1] =  tostring(key) .. tostring(value)
+    end
+    if table.maxn(tmp) == 0 then
+      return "{" .. table.concat(tb, ',') .. "}"
+    else
+      return "[" .. table.concat(tb, ',') .. "]"
+    end
+  end
+  if t == nil then
+    return nil
+  end
+  return transform(t)
+end
+
 return table_op;
